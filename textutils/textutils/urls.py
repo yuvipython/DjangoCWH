@@ -35,5 +35,6 @@ urlpatterns = [
     # path('remove_space', views.remove_space, name='remove_space'),
     # path('char_count', views.char_count, name='char_count'),
     path('analyze/', views.analyze, name='analyze'),
+    path('e1/', views.e1, name='e1'),
 
 ]

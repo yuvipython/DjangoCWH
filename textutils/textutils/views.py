@@ -36,19 +36,54 @@ def index(request):
 def analyze(request):
     # get the text
     djtext = request.GET.get('text', 'default')
-    remove_punc = request.GET.get('removepunctuation', 'default')
-    print(remove_punc)
+    remove_punctuation = request.GET.get('remove_punctuation', 'default')
+    uppercase = request.GET.get('uppercase', 'default')
+    remove_newline = request.GET.get('remove_newline', 'default')
+    remove_extra_space = request.GET.get('remove_extra_space', 'default')
+    char_count = request.GET.get('char_count', 'default')
 
-    if (remove_punc == 'on'):
+
+    print(remove_punctuation)
+
+    if remove_punctuation == 'on':
         punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
         analyzed = ""
 
         for char in djtext:
             if char not in punctuations:
                 analyzed = analyzed + char
-
         params = {'purpose': 'Remove Punctuations', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
 
+    elif uppercase == 'on':
+
+        analyzed = djtext.upper()
+        params = {'purpose': 'Uppercase', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif remove_newline == 'on':
+        analyzed = ""
+        for char in djtext:
+            if char != "\n":
+                analyzed = analyzed + char
+        params = {'purpose': 'Remove NewLine', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif remove_extra_space == 'on':
+        analyzed = ""
+        for index, char in enumerate(djtext):
+            if not (djtext[index] == " " and djtext[index+1] == " "):
+                analyzed = analyzed + char
+        params = {'purpose': 'Remove Extra Space', 'analyzed_text': analyzed}
+        return render(request, 'analyze.html', params)
+
+    elif char_count == 'on':
+        analyzed = djtext
+        # for index, char in enumerate(djtext):
+        #     if not (djtext[index] == " " and djtext[index+1] == " "):
+        #         analyzed = analyzed + char
+
+        params = {'purpose': 'Remove Extra Space', 'analyzed_text': len(analyzed)}
         return render(request, 'analyze.html', params)
 
     else:
@@ -56,3 +91,11 @@ def analyze(request):
 
     # analyze text
     # return HttpResponse("remove_punctuation")
+
+
+# Example 1
+
+def e1(request):
+    returnString = '''<h1>Entertainment : </h1><a href = https://www.google.com>Sab Milega</a>
+    <h1>Social Media : </h1><a href = https://www.facebook.com>Facebook</a>'''
+    return HttpResponse(returnString)
