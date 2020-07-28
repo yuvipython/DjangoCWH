@@ -13,7 +13,7 @@ def index(request):
 def analyze(request):
     keys_to_get = ['remove_punctuation', 'uppercase', 'remove_newline', 'remove_extra_space', 'char_count']
     remove_punctuation, uppercase, remove_newline, remove_extra_space, char_count = [request.GET.get(key) for key
-    in keys_to_get]
+                                                                                     in keys_to_get]
     djtext = request.GET.get('text', 'default')
     result_text = ""
     # remove_punctuation = request.GET.get('remove_punctuation', 'default')
@@ -67,7 +67,7 @@ def analyze(request):
         # return render(request, 'analyze.html', params)
 
     if char_count == 'on':
-        analyzed = analyzed + '\nCharacter count = '+str(len(djtext))
+        analyzed = analyzed + '\nCharacter count = ' + str(len(djtext))
         # for index, char in enumerate(djtext):
         #     if not (djtext[index] == " " and djtext[index+1] == " "):
         #         analyzed = analyzed + char
