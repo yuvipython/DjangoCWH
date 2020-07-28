@@ -10,40 +10,20 @@ def index(request):
     return render(request, 'index.html')
 
 
-# def remove_punctuation(request):
-#     # get the text
-#     djtext = request.GET.get('text', 'default')
-#     print(djtext)
-#     # analyze text
-#     return HttpResponse("remove_punctuation")
-#
-#
-# def capitalize_first(request):
-#     return HttpResponse("capitalize_first")
-#
-#
-# def remove_newline(request):
-#     return HttpResponse("remove_newline")
-#
-#
-# def remove_space(request):
-#     return HttpResponse("remove_space")
-#
-#
-# def char_count(request):
-#     return HttpResponse("char_count")
-
 def analyze(request):
-    # get the text
+    keys_to_get = ['remove_punctuation', 'uppercase', 'remove_newline', 'remove_extra_space', 'char_count']
+    remove_punctuation, uppercase, remove_newline, remove_extra_space, char_count = [request.GET.get(key) for key
+    in keys_to_get]
     djtext = request.GET.get('text', 'default')
-    remove_punctuation = request.GET.get('remove_punctuation', 'default')
-    uppercase = request.GET.get('uppercase', 'default')
-    remove_newline = request.GET.get('remove_newline', 'default')
-    remove_extra_space = request.GET.get('remove_extra_space', 'default')
-    char_count = request.GET.get('char_count', 'default')
-
-
-    print(remove_punctuation)
+    result_text = ""
+    # remove_punctuation = request.GET.get('remove_punctuation', 'default')
+    # uppercase = request.GET.get('uppercase', 'default')
+    # remove_newline = request.GET.get('remove_newline', 'default')
+    # remove_extra_space = request.GET.get('remove_extra_space', 'default')
+    # char_count = request.GET.get('char_count', 'default')
+    # djlist = request.GET.getlist('remove_punctuation', 'uppercase', 'remove_newline')
+    # print(djlist)
+    # print(remove_punctuation)
 
     if remove_punctuation == 'on':
         punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
@@ -52,38 +32,51 @@ def analyze(request):
         for char in djtext:
             if char not in punctuations:
                 analyzed = analyzed + char
-        params = {'purpose': 'Remove Punctuations', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
 
-    elif uppercase == 'on':
+        djtext = analyzed
+        result_text = 'Punctuations removed\n'
+        params = {'purpose': result_text, 'analyzed_text': analyzed}
 
+        # return render(request, 'analyze.html', params)
+
+    if uppercase == 'on':
         analyzed = djtext.upper()
-        params = {'purpose': 'Uppercase', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        djtext = analyzed
+        result_text = result_text + 'text converted to Uppercase\n'
+        params = {'purpose': result_text, 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
 
-    elif remove_newline == 'on':
+    if remove_newline == 'on':
         analyzed = ""
         for char in djtext:
             if char != "\n":
                 analyzed = analyzed + char
-        params = {'purpose': 'Remove NewLine', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        djtext = analyzed
+        result_text = result_text + 'Newline removed\n'
+        params = {'purpose': result_text, 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
 
-    elif remove_extra_space == 'on':
+    if remove_extra_space == 'on':
         analyzed = ""
         for index, char in enumerate(djtext):
-            if not (djtext[index] == " " and djtext[index+1] == " "):
+            if not (djtext[index] == " " and djtext[index + 1] == " "):
                 analyzed = analyzed + char
-        params = {'purpose': 'Remove Extra Space', 'analyzed_text': analyzed}
-        return render(request, 'analyze.html', params)
+        djtext = analyzed
+        result_text = result_text + 'Extra Space Removed\n'
+        params = {'purpose': result_text, 'analyzed_text': analyzed}
+        # return render(request, 'analyze.html', params)
 
-    elif char_count == 'on':
-        analyzed = djtext
+    if char_count == 'on':
+        analyzed = analyzed + '\nCharacter count = '+str(len(djtext))
         # for index, char in enumerate(djtext):
         #     if not (djtext[index] == " " and djtext[index+1] == " "):
         #         analyzed = analyzed + char
+        # analyzed = analyzed
+        result_text = result_text + 'Character Count\n'
+        params = {'purpose': result_text, 'analyzed_text': analyzed}
+    #     return render(request, 'analyze.html', params)
 
-        params = {'purpose': 'Remove Extra Space', 'analyzed_text': len(analyzed)}
+    if remove_punctuation or uppercase or remove_newline or remove_extra_space:
         return render(request, 'analyze.html', params)
 
     else:
