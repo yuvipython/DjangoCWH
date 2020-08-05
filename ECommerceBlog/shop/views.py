@@ -1,10 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
+# Create your views here.
+
 from math import ceil
+
+from django.shortcuts import render
+
+# Create your views here.
+from django.http import HttpResponse
+
 from .models import Product
 
 
-# Create your views here.
 def index(request):
     products = Product.objects.all()
     print(products)
@@ -19,25 +26,20 @@ def about(request):
 
 
 def contact(request):
-    return HttpResponse('contact Us')
-    # return render(request, 'shop/index.html')
+    return HttpResponse("We are at contact")
 
 
 def tracker(request):
-    return HttpResponse('tracker')
-    # return render(request, 'shop/index.html')
+    return HttpResponse("We are at tracker")
 
 
 def search(request):
-    return HttpResponse('search')
-    # return render(request, 'shop/index.html')
+    return HttpResponse("We are at search")
 
 
-def productview(request):
-    return HttpResponse('productview')
-    # return render(request, 'shop/index.html')
+def productView(request):
+    return HttpResponse("We are at product view")
 
 
 def checkout(request):
-    return HttpResponse('checkout')
-    # return render(request, 'shop/index.html')
+    return HttpResponse("We are at checkout")
