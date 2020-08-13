@@ -27,4 +27,14 @@
 </form>
 
 </div>
+
+{% endblock %}
+
+{% block js %}
+<script>
+{% if contactSubmitted %}
+alert('Thank you, your information saved successfully.')
+document.location = "/shop"
+{% endif %}
+</script>
 {% endblock %}

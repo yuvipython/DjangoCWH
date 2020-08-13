@@ -7,7 +7,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 
-from .models import Product, Contact
+from .models import Product, Contact, Orders
 
 
 def index(request):
@@ -43,7 +43,8 @@ def contact(request):
         desc = request.POST.get('desc', '')
         contact = Contact(name=name, email=email, phone=phone, desc=desc)
         contact.save()
-
+        contactSubmitted = True
+        return render(request, 'shop/contact.html',{'contactSubmitted': contactSubmitted})
     return render(request, 'shop/contact.html')
 
 
@@ -62,8 +63,19 @@ def productView(request, myid):
 
 
 def checkout(request):
+    if request.method == 'POST':
+        items_json = request.POST.get('items_json', '')
+        name = request.POST.get('name', '')
+        email = request.POST.get('email', '')
+        phone = request.POST.get('phone', '')
+        address = request.POST.get('address1', '') + " " + request.POST.get('address2', '')
+        city = request.POST.get('city', '')
+        state = request.POST.get('state', '')
+        zip_code = request.POST.get('zip_code', '')
+        order = Orders(items_json=items_json, name=name, email=email, phone=phone,
+                       address=address, city=city, state=state, zip_code=zip_code)
+        order.save()
+        thank = True
+        id = order.order_id
+        return render(request, 'shop/checkout.html', {'thank': thank, 'id': id})
     return render(request, 'shop/checkout.html')
-
-
-# def checkout(request):
-#     return HttpResponse("We are at checkout")
