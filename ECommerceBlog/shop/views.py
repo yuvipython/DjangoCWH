@@ -1,23 +1,13 @@
 # Create your views here.
 
 from math import ceil
-
 from django.shortcuts import render
-
-# Create your views here.
+from .models import Product, Contact, Orders, OrderUpdate
+import json
 from django.http import HttpResponse
-
-from .models import Product, Contact, Orders
 
 
 def index(request):
-    # products = Product.objects.all()
-    # print(products)
-    # n = len(products)
-    # nSlides = n // 4 + ceil((n / 4) - (n // 4))
-    # params = {'no_of_slides': nSlides, 'range': range(1, nSlides), 'product': products}
-    # allProds = [[products, range(1, nSlides), nSlides], [products, range(1, nSlides), nSlides]]
-
     allProds = []
     catprods = Product.objects.values('category', 'id')
     cats = {item['category'] for item in catprods}
@@ -48,10 +38,6 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 
-def tracker(request):
-    return render(request, 'shop/tracker.html')
-
-
 def search(request):
     return search(request, 'shop/search.html')
 
@@ -75,7 +61,30 @@ def checkout(request):
         order = Orders(items_json=items_json, name=name, email=email, phone=phone,
                        address=address, city=city, state=state, zip_code=zip_code)
         order.save()
+        update = OrderUpdate(order_id=order.order_id, update_desc='The order has been placed.')
+        update.save()
         thank = True
         id = order.order_id
         return render(request, 'shop/checkout.html', {'thank': thank, 'id': id})
     return render(request, 'shop/checkout.html')
+
+
+def tracker(request):
+    if request.method == 'POST':
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        try:
+            order = Orders.objects.filter(order_id=orderId, email=email)
+            if len(order) > 0:
+                update = OrderUpdate.objects.filter(order_id=orderId)
+                updates = []
+                for item in update:
+                    updates.append({'text': item.update_desc, 'time': item.timestamp})
+                    response = json.dumps(updates, default=str)
+                return HttpResponse(response)
+            else:
+                return HttpResponse('{}')
+        except Exception as e:
+            return HttpResponse('{}')
+
+    return render(request, 'shop/tracker.html')
